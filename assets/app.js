@@ -57,20 +57,31 @@ const MONGODB_URI = async () => {
 
 module.exports.lambdaHandler = async (event, context) => {
   // wait until string is returned for db connection
-  const uri = await MONGODB_URI();
+  // const uri = await MONGODB_URI();
 
   // establish database connection
-  mongoose.connect(uri);
+  // mongoose.connect(uri);
 
   // instantiate schema object to be added to database
-  const test = new Test({
-    name: 'Jesse',
+  // const test = new Test(JSON.stringify(event));
+
+  // await the update to the collection
+  // const saveData = await test.save();
+
+  // return the data added to the collection
+  const json = JSON.stringify({
+    Name: 'Jesse',
     otherName: 'Richey',
   });
 
-  // await the update to the collection
-  const saveData = await test.save();
-
-  // return the data added to the collection
-  return saveData;
+  try {
+    const response = {
+      statusCode: 200,
+      body: json,
+    };
+    return response;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
