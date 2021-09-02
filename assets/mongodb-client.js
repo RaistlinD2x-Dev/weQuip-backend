@@ -19,4 +19,4 @@ const client = new MongoClient(MONGODB_URI(), {
   useUnifiedTopology: true,
 });
 
-module.exports = client.connect();
+exports.clientPromise = client.connect();

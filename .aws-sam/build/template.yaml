@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Various APIs for interfacing with Assets Collection Test
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  AssetsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /assets
+            Method: get
+      ImageUri: assetsfunction:nodejs14.x-v1
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./assets
+      Dockerfile: Dockerfile
+Outputs:
+  AssetsApi:
+    Description: API Gateway endpoint URL for Prod stage for Assets function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/assets/
+  AssetsFunction:
+    Description: Assets Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - AssetsFunction
+      - Arn
+  AssetsFunctionIamRole:
+    Description: Implicit IAM Role created for Assets function
+    Value:
+      Fn::GetAtt:
+      - AssetsFunctionRole
+      - Arn

@@ -1,4 +1,5 @@
-const clientPromise = require('./mongodb-client');
+const { MongoClient } = require('mongodb');
+const ssm = new (require('aws-sdk/clients/ssm'))();
 
 let response;
 
@@ -14,8 +15,23 @@ let response;
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  *
  */
-exports.lambdaHandler = async (event, context) => {
-  const client = await clientPromise;
 
-  return client.db().databaseName;
+// const MONGODB_URI = async () => {
+//   const data = await ssm
+//     .getParameters({
+//       Connect: ['MONGODB_URI'],
+//     })
+//     .promise();
+
+//   return data;
+// };
+
+const client = new MongoClient(
+  'mongodb+srv://dbuser:Today123!@wequipdb.ylbzr.mongodb.net/weQuipDB?retryWrites=true&w=majority'
+);
+
+module.exports.lambdaHandler = async (event, context) => {
+  const clientWait = await client;
+
+  return clientWait.db().databaseName || event.error.message;
 };
