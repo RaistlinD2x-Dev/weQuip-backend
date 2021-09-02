@@ -57,7 +57,7 @@ const MONGODB_URI = async () => {
 
 module.exports.lambdaHandler = async (event, context) => {
   // wait until string is returned for db connection
-  // const uri = await MONGODB_URI();
+  const uri = await MONGODB_URI();
 
   // establish database connection
   // mongoose.connect(uri);
