@@ -5,18 +5,26 @@ Description: 'Various APIs for interfacing with Assets Collection Test
   '
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 15
+  Api:
+    Cors:
+      AllowMethods: '''*'''
+      AllowHeaders: '''*'''
+      AllowOrigin: '''*'''
 Resources:
   AssetsFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
+      Policies:
+      - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+      - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
       Events:
-        HelloWorld:
+        Assets:
           Type: Api
           Properties:
             Path: /assets
-            Method: get
+            Method: ANY
       ImageUri: assetsfunction:nodejs14.x-v1
     Metadata:
       DockerTag: nodejs14.x-v1

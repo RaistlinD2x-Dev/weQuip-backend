@@ -7,19 +7,29 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 15
+  Api:
+    # enable CORS; to make more specific, change the origin wildcard
+    # to a particular domain name, e.g. "'www.example.com'"
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
 
 Resources:
   AssetsFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
       Events:
-        HelloWorld:
+        Assets:
           Type: Api
           Properties:
             Path: /assets
-            Method: get
+            Method: ANY
     Metadata:
       DockerTag: nodejs14.x-v1
       DockerContext: ./assets

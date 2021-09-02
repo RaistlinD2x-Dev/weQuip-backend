@@ -12,18 +12,47 @@ const { Schema } = mongoose;
 // Should migrate to models folder in the future
 const assetSchema = new Schema(
   {
-    name: {
+    productGroup: {
       type: String,
-      required: true,
     },
-    otherName: {
+    assetNumber: {
       type: String,
-      require: true,
+    },
+    serialNumber: {
+      type: String,
+    },
+    assetCost: {
+      type: Number,
+    },
+    itemShortName: {
+      type: String,
+    },
+    itemLongName: {
+      type: String,
+    },
+    manufacturerPartNumber: {
+      type: String,
+    },
+    internalPartNumber: {
+      type: String,
+    },
+    manufacturerName: {
+      type: String,
+    },
+    assetLocation: {
+      type: String,
+    },
+    vendor: {
+      type: String,
+    },
+    lifeSpan: {
+      type: Number,
+    },
+    itemDescription: {
+      type: String,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 // 1) Define name of collection in the singular, 2) Define Schema to be used
@@ -60,24 +89,21 @@ module.exports.lambdaHandler = async (event, context) => {
   const uri = await MONGODB_URI();
 
   // establish database connection
-  // mongoose.connect(uri);
+  mongoose.connect(uri);
 
   // instantiate schema object to be added to database
-  // const test = new Test(JSON.stringify(event));
+  const test = await new Test(event);
 
   // await the update to the collection
-  // const saveData = await test.save();
+  await test.save();
 
   // return the data added to the collection
-  const json = JSON.stringify({
-    Name: 'Jesse',
-    otherName: 'Richey',
-  });
-
   try {
     const response = {
       statusCode: 200,
-      body: json,
+      body: JSON.stringify({
+        eventObj: event,
+      }),
     };
     return response;
   } catch (err) {
