@@ -104,6 +104,10 @@ module.exports.lambdaHandler = async (event, context) => {
       body: JSON.stringify({
         eventObj: event,
       }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
     };
     return response;
   } catch (err) {
