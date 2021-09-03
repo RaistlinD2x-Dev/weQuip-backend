@@ -92,7 +92,7 @@ module.exports.lambdaHandler = async (event, context) => {
   mongoose.connect(uri);
 
   // instantiate schema object to be added to database
-  const test = await new Test(event);
+  const test = await new Test(JSON.parse(event.body));
 
   // await the update to the collection
   await test.save();
