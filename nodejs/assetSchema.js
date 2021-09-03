@@ -45,4 +45,4 @@ const assetSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = assetSchema;
+module.exports.schema = assetSchema;

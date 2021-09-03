@@ -3,10 +3,10 @@
 // const ssm = new (require('aws-sdk/clients/ssm'))();
 
 // import asset Schema
-const Schema = require('./assetSchema.js');
+const schema = require('./assetSchema.js');
 
 // mongoose driver
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // import connection helper
 const conn = require('./mongooseconnection.js');
@@ -70,7 +70,7 @@ module.exports.lambdaHandler = async (event, context) => {
 
   await conn;
 
-  const asset = new Schema(event.body);
+  const asset = new schema(event.body);
 
   await asset.save();
 

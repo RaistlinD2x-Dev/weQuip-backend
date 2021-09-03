@@ -28,7 +28,7 @@ Resources:
       ImageUri: assetsfunction:nodejs14.x-v1
     Metadata:
       DockerTag: nodejs14.x-v1
-      DockerContext: ./assets
+      DockerContext: ./nodejs
       Dockerfile: Dockerfile
 Outputs:
   AssetsApi:

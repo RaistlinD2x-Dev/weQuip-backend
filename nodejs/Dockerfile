@@ -1,6 +1,8 @@
 FROM public.ecr.aws/lambda/nodejs:14
 
-COPY app.js assetSchema.js mongoconnection.js package.json ./
+COPY app.js ./
+COPY mongoconnection.js ./
+COPY assetSchema.js ./
 
 RUN npm install
 
