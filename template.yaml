@@ -21,9 +21,13 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
+      CodeUri: assets/
       Policies:
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      # Layers:
+      #   - !Ref AssetsNodeModulesDepLayer
+      #   - !Ref AssetsCustomModulesDepLayer
       Events:
         Assets:
           Type: Api
@@ -32,8 +36,25 @@ Resources:
             Method: ANY
     Metadata:
       DockerTag: nodejs14.x-v1
-      DockerContext: ./nodejs
+      DockerContext: ./assets
       Dockerfile: Dockerfile
+  # Layers can't be used when containerizing... so how why the hell can't I find my modules.
+  # AssetsNodeModulesDepLayer:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: assets-node-modules-dependencies
+  #     Description: Dependencies for assets handling
+  #     ContentUri: ./assets/dependencies/
+  #     LicenseInfo: "MIT"
+  #     RetentionPolicy: Retain
+  # AssetsCustomModulesDepLayer:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: assets-custom-modules-dependencies
+  #     Description: Dependencies for assets handling
+  #     ContentUri: ./assets/dependencies/
+  #     LicenseInfo: "MIT"
+  #     RetentionPolicy: Retain
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
