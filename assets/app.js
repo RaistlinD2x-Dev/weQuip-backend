@@ -2,11 +2,11 @@
 // secret store AWS
 // const ssm = new (require('aws-sdk/clients/ssm'))();
 
+// mongoose driver
+// const mongoose = require('mongoose');
+
 // import asset Schema
 const schema = require('./assetSchema.js');
-
-// mongoose driver
-const mongoose = require('mongoose');
 
 // import connection helper
 const conn = require('./mongooseconnection.js');
