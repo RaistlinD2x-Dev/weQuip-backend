@@ -27,27 +27,19 @@ module.exports.lambdaHandler = async (event, context) => {
   await mongoConnect.connect();
 
   // pass JSON object from front end into the model
-  const asset = new assetModel(event.body);
+  const asset = new assetModel(JSON.parse(event.body));
 
   // save the JSON to the DB
   await asset.save();
 
   // required info to handle CORS and response data, eventObj can be modified
-  try {
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        eventObj: event,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        // CORS response is required
-        'Access-Control-Allow-Origin': '*',
-      },
-    };
-    return response;
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
+  const response = {
+    statusCode: 200,
+    body: event.body,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  };
+  return response;
 };
