@@ -24,12 +24,13 @@ const MONGODB_URI = async () => {
   }
 };
 
-// allows for connection to maintained with multiple Lambda executions
+// allows for connection to be maintained with multiple Lambda executions
 // optimize cold-start times
 let conn = null;
 
 connect = async () => {
   try {
+    // await and store DB URI
     const uri = await MONGODB_URI();
 
     // if connection is already established, return the cached connection
@@ -42,7 +43,7 @@ connect = async () => {
     // if no connection exist, create one
     conn = await mongoose.connect(uri);
 
-    // confirmation of db connection
+    // confirmation of db connection if not cached
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error: '));
     db.once('open', () => {

@@ -41,6 +41,7 @@ module.exports.lambdaHandler = async (event, context) => {
       }),
       headers: {
         'Content-Type': 'application/json',
+        // CORS response is required
         'Access-Control-Allow-Origin': '*',
       },
     };
