@@ -1,34 +1,58 @@
+// import aws-sdk and set region
+const AWS = require('aws-sdk');
+AWS.config.update({ region: 'us-east-2' });
+
+//import mongoose driver
 const mongoose = require('mongoose');
+
+// import and instantiate SSM
+const ssm = new (require('aws-sdk/clients/ssm'))();
 
 // parse parameter store from AWS to retrive DB URI
 const MONGODB_URI = async () => {
-  const data = await ssm
-    .getParameters({
-      Names: ['MONGODB_URI'],
-    })
-    .promise()
-    .resolve();
+  try {
+    const data = await ssm
+      .getParameter({
+        Name: 'MONGODB_URI',
+      })
+      .promise();
 
-  // parse object returned so it only provides the URI string for DB connection
-  return data.Parameters[0].Value;
+    // parse object returned so it only provides the URI string for DB connection
+    return data.Parameter.Value;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
+// allows for connection to maintained with multiple Lambda executions
+// optimize cold-start times
 let conn = null;
 
-const uri = MONGODB_URI();
+connect = async () => {
+  try {
+    const uri = await MONGODB_URI();
 
-module.exports.connect = async () => {
-  if (conn == null) {
-    conn = mongoose
-      .connect(uri, {
-        serverSelectionTimeoutMS: 5000,
-      })
-      .then(() => mongoose);
+    // if connection is already established, return the cached connection
+    // keeps the DB connection alive for optimization
+    if (conn && conn.serverConfig.isConnected()) {
+      console.log('using cached instance of MongoDB');
+      return Promise.resolve(conn);
+    }
 
-    // `await`ing connection after assigning to the `conn` variable
-    // to avoid multiple function calls creating new connections
-    await conn;
+    // if no connection exist, create one
+    conn = await mongoose.connect(uri);
+
+    // confirmation of db connection
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error: '));
+    db.once('open', () => {
+      console.log('Connected successfully');
+    });
+
+    return conn;
+  } catch (err) {
+    console.log(err);
   }
-
-  return conn;
 };
+
+exports.connect = connect;

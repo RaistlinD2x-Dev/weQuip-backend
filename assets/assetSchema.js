@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// create schema validation for mongoose model
 const assetSchema = new mongoose.Schema(
   {
     productGroup: {
@@ -45,4 +46,7 @@ const assetSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports.schema = assetSchema;
+// create mongoose model from Schema
+const Asset = mongoose.model('Asset', assetSchema);
+
+module.exports = Asset;

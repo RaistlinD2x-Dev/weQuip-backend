@@ -1,25 +1,10 @@
 'use strict';
-// secret store AWS
-// const ssm = new (require('aws-sdk/clients/ssm'))();
 
-// mongoose driver
-// const mongoose = require('mongoose');
-
-// import asset Schema
-const schema = require('./assetSchema.js');
+// import asset Model
+const assetModel = require('./assetSchema.js');
 
 // import connection helper
-const conn = require('./mongooseconnection.js');
-
-// Schema constructor
-// const { Schema } = mongoose;
-
-// define Schema Model for document objects to be added to the collection
-// Should migrate to models folder in the future
-
-// 1) Define name of collection in the singular, 2) Define Schema to be used
-// this will be exported from the models/modelName.js file in the future
-// const Test = mongoose.model('Asset', assetSchema);
+const mongoConnect = require('./mongoconnection.js');
 
 /**
  *
@@ -34,46 +19,20 @@ const conn = require('./mongooseconnection.js');
  *
  */
 
-// // parse parameter store from AWS to retrive DB URI
-// const MONGODB_URI = async () => {
-//   const data = await ssm
-//     .getParameters({
-//       Names: ['MONGODB_URI'],
-//     })
-//     .promise()
-//     .resolve();
-
-//   // parse object returned so it only provides the URI string for DB connection
-//   return data.Parameters[0].Value;
-// };
-
-// const uri = MONGODB_URI();
-
-// const clientPromise = mongoose.connect(uri);
-
 module.exports.lambdaHandler = async (event, context) => {
+  // allows the event loop to be paused when working with cached DB
   context.callbackWaitsForEmptyEventLoop = false;
 
-  // wait until string is returned for db connection
-  // const uri = await MONGODB_URI();
+  // await the DB connection
+  await mongoConnect.connect();
 
-  // establish database connection
-  // mongoose.connect(uri);
+  // pass JSON object from front end into the model
+  const asset = new assetModel(event.body);
 
-  // instantiate schema object to be added to database
-  // const asset = new AssetModel(JSON.parse(event.body));
-
-  // await the update to the collection
-  // await asset.save();
-
-  // return the data added to the collection
-
-  await conn;
-
-  const asset = new schema(event.body);
-
+  // save the JSON to the DB
   await asset.save();
 
+  // required info to handle CORS and response data, eventObj can be modified
   try {
     const response = {
       statusCode: 200,
