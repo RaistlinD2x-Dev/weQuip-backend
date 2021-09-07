@@ -33,7 +33,7 @@ Resources:
             Method: POST
     Metadata:
       DockerTag: nodejs14.x-v1
-      DockerContext: ./assets
+      DockerContext: ./post-asset
       Dockerfile: Dockerfile
 
 Outputs:
