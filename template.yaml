@@ -17,16 +17,16 @@ Globals:
       AllowOrigin: "'*'"
 
 Resources:
-  AssetPostFunction:
+  PostAssetFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      CodeUri: assets/
+      CodeUri: post-asset/
       Policies:
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
       Events:
-        wequip:
+        PostAsset:
           Type: Api
           Properties:
             Path: /asset/create
@@ -36,16 +36,44 @@ Resources:
       DockerContext: ./post-asset
       Dockerfile: Dockerfile
 
+  GetAssetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: get-asset/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        GetAsset:
+          Type: Api
+          Properties:
+            Path: /asset/getone/{assetNumber}
+            Method: GET
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./get-asset
+      Dockerfile: Dockerfile
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  wequipApi:
-    Description: "API Gateway endpoint URL for Prod stage for Assets function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/wequip/"
-  AssetPostFunction:
+  PostAssetApi:
+    Description: "API Gateway endpoint URL for Prod stage for post-asset function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/post-asset/"
+  PostAssetFunction:
     Description: "Assets Lambda Function ARN"
-    Value: !GetAtt AssetPostFunction.Arn
-  AssetPostFunctionIamRole:
+    Value: !GetAtt PostAssetFunction.Arn
+  PostAssetFunctionIamRole:
     Description: "Implicit IAM Role created for Assets function"
-    Value: !GetAtt AssetPostFunctionRole.Arn
+    Value: !GetAtt PostAssetFunctionRole.Arn
+  GetAssetApi:
+    Description: "API Gateway endpoint URL for Prod stage for get-asset function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get-asset/"
+  GetAssetFunction:
+    Description: "Assets Lambda Function ARN"
+    Value: !GetAtt GetAssetFunction.Arn
+  GetAssetFunctionIamRole:
+    Description: "Implicit IAM Role created for Assets function"
+    Value: !GetAtt GetAssetFunctionRole.Arn
