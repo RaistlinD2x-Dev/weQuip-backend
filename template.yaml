@@ -17,7 +17,7 @@ Globals:
       AllowOrigin: "'*'"
 
 Resources:
-  AssetsFunction:
+  AssetPostFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
@@ -25,47 +25,27 @@ Resources:
       Policies:
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
-      # Layers:
-      #   - !Ref AssetsNodeModulesDepLayer
-      #   - !Ref AssetsCustomModulesDepLayer
       Events:
-        Assets:
+        wequip:
           Type: Api
           Properties:
-            Path: /assets
-            Method: ANY
+            Path: /asset/create
+            Method: POST
     Metadata:
       DockerTag: nodejs14.x-v1
       DockerContext: ./assets
       Dockerfile: Dockerfile
-  # Layers can't be used when containerizing... so how why the hell can't I find my modules.
-  # AssetsNodeModulesDepLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: assets-node-modules-dependencies
-  #     Description: Dependencies for assets handling
-  #     ContentUri: ./assets/dependencies/
-  #     LicenseInfo: "MIT"
-  #     RetentionPolicy: Retain
-  # AssetsCustomModulesDepLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: assets-custom-modules-dependencies
-  #     Description: Dependencies for assets handling
-  #     ContentUri: ./assets/dependencies/
-  #     LicenseInfo: "MIT"
-  #     RetentionPolicy: Retain
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  AssetsApi:
+  wequipApi:
     Description: "API Gateway endpoint URL for Prod stage for Assets function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/assets/"
-  AssetsFunction:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/wequip/"
+  AssetPostFunction:
     Description: "Assets Lambda Function ARN"
-    Value: !GetAtt AssetsFunction.Arn
-  AssetsFunctionIamRole:
+    Value: !GetAtt AssetPostFunction.Arn
+  AssetPostFunctionIamRole:
     Description: "Implicit IAM Role created for Assets function"
-    Value: !GetAtt AssetsFunctionRole.Arn
+    Value: !GetAtt AssetPostFunctionRole.Arn
