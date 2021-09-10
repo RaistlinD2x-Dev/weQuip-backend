@@ -42,6 +42,9 @@ const assetSchema = new mongoose.Schema(
     itemDescription: {
       type: String,
     },
+    childAssets: {
+      type: Array,
+    },
   },
   { timestamps: true }
 );
