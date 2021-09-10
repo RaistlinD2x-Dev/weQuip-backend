@@ -28,14 +28,14 @@ const MONGODB_URI = async () => {
 // optimize cold-start times
 let conn = null;
 
-connect = async () => {
+const connect = async () => {
   try {
     // await and store DB URI
     const uri = await MONGODB_URI();
 
     // if connection is already established, return the cached connection
     // keeps the DB connection alive for optimization
-    if (conn && conn.serverConfig.isConnected()) {
+    if (conn) {
       console.log('using cached instance of MongoDB');
       return Promise.resolve(conn);
     }
