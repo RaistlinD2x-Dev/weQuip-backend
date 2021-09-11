@@ -47,7 +47,7 @@ Resources:
         GetAsset:
           Type: Api
           Properties:
-            Path: /asset/getone/{assetNumber}
+            Path: /asset/{assetNumber}
             Method: GET
     Metadata:
       DockerTag: nodejs14.x-v1
@@ -71,6 +71,25 @@ Resources:
     Metadata:
       DockerTag: nodejs14.x-v1
       DockerContext: ./post-vendor
+      Dockerfile: Dockerfile
+
+  GetVendorsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: get-vendors/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        GetVendors:
+          Type: Api
+          Properties:
+            Path: /vendors
+            Method: GET
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./get-vendors
       Dockerfile: Dockerfile
 
 Outputs:
@@ -106,3 +125,13 @@ Outputs:
   PostVendorFunctionIamRole:
     Description: "Implicit IAM Role created for Post Vendor function"
     Value: !GetAtt PostVendorFunctionRole.Arn
+
+  GetVendorsApi:
+    Description: "API Gateway endpoint URL for Prod stage for post-vendor function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  GetVendorsFunction:
+    Description: "Post Vendor Lambda Function ARN"
+    Value: !GetAtt GetVendorsFunction.Arn
+  GetVendorsFunctionIamRole:
+    Description: "Implicit IAM Role created for Post Vendor function"
+    Value: !GetAtt GetVendorsFunctionRole.Arn
