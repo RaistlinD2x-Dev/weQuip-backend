@@ -6,36 +6,36 @@ const vendorSchema = new mongoose.Schema(
     companyName: {
       type: String,
     },
-    shippingAddress: {
+    payToAddress: {
       type: Object,
-      shippingStreetAddress: {
+      streetAddress: {
         type: String,
       },
-      shippingState: {
+      state: {
         type: String,
       },
-      shippingCountry: {
+      country: {
         type: String,
       },
-      shippingPostalCode: {
+      postalCode: {
         type: String,
       },
     },
-    billingAddress: {
-      type: Object,
-      billingStreetAddress: {
-        type: String,
-      },
-      billingState: {
-        type: String,
-      },
-      billingCountry: {
-        type: String,
-      },
-      billingPostalCode: {
-        type: String,
-      },
-    },
+    // billingAddress: {
+    //   type: Object,
+    //   billingStreetAddress: {
+    //     type: String,
+    //   },
+    //   billingState: {
+    //     type: String,
+    //   },
+    //   billingCountry: {
+    //     type: String,
+    //   },
+    //   billingPostalCode: {
+    //     type: String,
+    //   },
+    // },
   },
   { timestamps: true }
 );
