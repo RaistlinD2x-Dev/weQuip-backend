@@ -54,25 +54,55 @@ Resources:
       DockerContext: ./get-asset
       Dockerfile: Dockerfile
 
+  PostVendorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: post-vendor/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        PostAsset:
+          Type: Api
+          Properties:
+            Path: /vendor/create
+            Method: POST
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./post-vendor
+      Dockerfile: Dockerfile
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   PostAssetApi:
     Description: "API Gateway endpoint URL for Prod stage for post-asset function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/post-asset/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   PostAssetFunction:
     Description: "Assets Lambda Function ARN"
     Value: !GetAtt PostAssetFunction.Arn
   PostAssetFunctionIamRole:
     Description: "Implicit IAM Role created for Assets function"
     Value: !GetAtt PostAssetFunctionRole.Arn
+
   GetAssetApi:
     Description: "API Gateway endpoint URL for Prod stage for get-asset function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get-asset/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   GetAssetFunction:
     Description: "Assets Lambda Function ARN"
     Value: !GetAtt GetAssetFunction.Arn
   GetAssetFunctionIamRole:
-    Description: "Implicit IAM Role created for Assets function"
+    Description: "Implicit IAM Role created for Get Asset function"
     Value: !GetAtt GetAssetFunctionRole.Arn
+
+  PostVendorApi:
+    Description: "API Gateway endpoint URL for Prod stage for post-vendor function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  PostVendorFunction:
+    Description: "Post Vendor Lambda Function ARN"
+    Value: !GetAtt PostVendorFunction.Arn
+  PostVendorFunctionIamRole:
+    Description: "Implicit IAM Role created for Post Vendor function"
+    Value: !GetAtt PostVendorFunctionRole.Arn

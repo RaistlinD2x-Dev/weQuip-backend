@@ -38,10 +38,10 @@ const connect = async () => {
     if (conn) {
       console.log('using cached instance of MongoDB');
       return Promise.resolve(conn);
+    } else {
+      // if no connection exist, create one
+      conn = await mongoose.connect(uri);
     }
-
-    // if no connection exist, create one
-    conn = await mongoose.connect(uri);
 
     // confirmation of db connection if not cached
     const db = mongoose.connection;
