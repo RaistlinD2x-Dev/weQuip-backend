@@ -26,22 +26,14 @@ module.exports.lambdaHandler = async (event, context) => {
   // await the DB connection
   await mongoConnect.connect();
 
-  const assetNumber = (endOfPath) => {
-    const arr = endOfPath.split('/')
-    const targetNumber = arr[-1]
-
-    return targetNumber
-    
-  }
-
-  // const obj = await assetNumber(event.pathParameter.assetNumber)
-
-  // const result = await assetModel.find().where('assetNumber').eq("ASSET12345")
+  const queryResult = await assetModel.findOne({
+    assetNumber: parseInt(event.pathParameters.assetNumber),
+  });
 
   // required info to handle CORS and response data
   const response = {
     statusCode: 200,
-    body: JSON.stringify(event.body),
+    body: JSON.stringify(queryResult),
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
