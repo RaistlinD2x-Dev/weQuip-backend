@@ -54,6 +54,25 @@ Resources:
       DockerContext: ./get-asset
       Dockerfile: Dockerfile
 
+  GetAssetsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: get-assets/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        GetAssets:
+          Type: Api
+          Properties:
+            Path: /assets
+            Method: GET
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./get-assets
+      Dockerfile: Dockerfile
+
   PostVendorFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -115,6 +134,16 @@ Outputs:
   GetAssetFunctionIamRole:
     Description: "Implicit IAM Role created for Get Asset function"
     Value: !GetAtt GetAssetFunctionRole.Arn
+
+  GetAssetsApi:
+    Description: "API Gateway endpoint URL for Prod stage for get-asset function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  GetAssetsFunction:
+    Description: "Assets Lambda Function ARN"
+    Value: !GetAtt GetAssetsFunction.Arn
+  GetAssetsFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Asset function"
+    Value: !GetAtt GetAssetsFunctionRole.Arn
 
   PostVendorApi:
     Description: "API Gateway endpoint URL for Prod stage for post-vendor function"

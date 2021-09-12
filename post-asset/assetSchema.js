@@ -7,7 +7,7 @@ const assetSchema = new mongoose.Schema(
       type: String,
     },
     assetNumber: {
-      type: String,
+      type: Number,
     },
     serialNumber: {
       type: String,
