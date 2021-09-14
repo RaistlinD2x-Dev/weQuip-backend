@@ -130,6 +130,25 @@ Resources:
       DockerContext: ./post-commodity
       Dockerfile: Dockerfile
 
+  GetCommoditiesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: get-commodities/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        PostCommodity:
+          Type: Api
+          Properties:
+            Path: /commodities
+            Method: GET
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./get-commodities
+      Dockerfile: Dockerfile
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
@@ -193,3 +212,13 @@ Outputs:
   PostCommodityFunctionIamRole:
     Description: "Implicit IAM Role created for Post Commodity function"
     Value: !GetAtt PostCommodityFunctionRole.Arn
+
+  GetCommoditiesApi:
+    Description: "API Gateway endpoint URL for Prod stage for get-commodities function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  GetCommoditiesFunction:
+    Description: "Assets Lambda Function ARN"
+    Value: !GetAtt GetCommoditiesFunction.Arn
+  GetCommoditiesFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Commodity function"
+    Value: !GetAtt GetCommoditiesFunctionRole.Arn
