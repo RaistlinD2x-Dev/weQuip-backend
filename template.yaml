@@ -168,6 +168,25 @@ Resources:
       DockerContext: ./post-location
       Dockerfile: Dockerfile
 
+  GetLocationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      CodeUri: get-locations/
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Events:
+        GetLocations:
+          Type: Api
+          Properties:
+            Path: /locations
+            Method: GET
+    Metadata:
+      DockerTag: nodejs14.x-v1
+      DockerContext: ./get-locations
+      Dockerfile: Dockerfile
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
@@ -251,3 +270,13 @@ Outputs:
   PostLocationFunctionIamRole:
     Description: "Implicit IAM Role created for Location function"
     Value: !GetAtt PostLocationFunctionRole.Arn
+
+  GetLocationsApi:
+    Description: "API Gateway endpoint URL for Prod stage for get-locations function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  GetLocationsFunction:
+    Description: "Get Locations Lambda Function ARN"
+    Value: !GetAtt GetLocationsFunction.Arn
+  GetLocationsFunctionIamRole:
+    Description: "Implicit IAM Role created for Locations function"
+    Value: !GetAtt GetLocationsFunctionRole.Arn
