@@ -26,7 +26,7 @@ module.exports.lambdaHandler = async (event, context) => {
   // await the DB connection
   await mongoConnect.connect();
 
-  const queryResult = await assetModel.find({}).select('assetNumber -_id');
+  const queryResult = await assetModel.find({}).select('-_id');
 
   // required info to handle CORS and response data
   const response = {
